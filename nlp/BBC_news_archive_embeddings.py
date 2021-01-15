@@ -1,10 +1,11 @@
-import csv
 import tensorflow as tf
-import numpy as np
-from tensorflow.keras.preprocessing.text import Tokenizer
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-import matplotlib.pyplot as plt
-import io
+from utils.accuracy_loss import plot_acc_loss
+from utils.io_preprocessing import (
+    read_bbc_news_csv,
+    train_test_split_sentences_labels,
+    tokenise_text_to_sequences,
+    padded_sequences,
+)
 
 vocab_size = 1000
 embedding_dim = 16
@@ -173,110 +174,86 @@ stopwords = [
 ]
 
 
-with open("/tmp/bbc-text.csv", "r") as csvfile:
-    reader = csv.reader(csvfile, delimiter=",")
-    next(reader)
-    for row in reader:
-        labels.append(row[0])
-        sentence = row[1]
-        for word in stopwords:
-            token = " " + word + " "
-            sentence = sentence.replace(token, " ")
-        sentences.append(sentence)
-
-train_size = int(len(sentences) * training_portion)
-
-train_sentences = sentences[:train_size]
-train_labels = labels[:train_size]
-
-validation_sentences = sentences[train_size:]
-validation_labels = labels[train_size:]
-
-tokenizer = Tokenizer(num_words=vocab_size, oov_token=oov_tok)
-tokenizer.fit_on_texts(train_sentences)
-word_index = tokenizer.word_index
-
-train_sequences = tokenizer.texts_to_sequences(train_sentences)
-train_padded = pad_sequences(train_sequences, padding=padding_type, maxlen=max_length)
-
-validation_sequences = tokenizer.texts_to_sequences(validation_sentences)
-validation_padded = pad_sequences(
-    validation_sequences, padding=padding_type, maxlen=max_length
-)
-
-label_tokenizer = Tokenizer()
-label_tokenizer.fit_on_texts(labels)
-
-training_label_seq = np.array(label_tokenizer.texts_to_sequences(train_labels))
-validation_label_seq = np.array(label_tokenizer.texts_to_sequences(validation_labels))
-
-model = tf.keras.Sequential(
-    [
-        tf.keras.layers.Embedding(vocab_size, embedding_dim, input_length=max_length),
-        tf.keras.layers.GlobalAveragePooling1D(),
-        tf.keras.layers.Dense(24, activation="relu"),
-        tf.keras.layers.Dense(6, activation="softmax"),
-    ]
-)
-model.compile(
-    loss="sparse_categorical_crossentropy", optimizer="adam", metrics=["accuracy"]
-)
-model.summary()
-
-# Expected Output
-# Layer (type)                 Output Shape              Param #
-# =================================================================
-# embedding (Embedding)        (None, 120, 16)           16000
-# _________________________________________________________________
-# global_average_pooling1d (Gl (None, 16)                0
-# _________________________________________________________________
-# dense (Dense)                (None, 24)                408
-# _________________________________________________________________
-# dense_1 (Dense)              (None, 6)                 150
-# =================================================================
-# Total params: 16,558
-# Trainable params: 16,558
-# Non-trainable params: 0
+def model_build(vocab_size, embedding_dim, input_length):
+    """
+    # Expected Output
+    # Layer (type)                 Output Shape              Param #
+    # =================================================================
+    # embedding (Embedding)        (None, 120, 16)           16000
+    # _________________________________________________________________
+    # global_average_pooling1d (Gl (None, 16)                0
+    # _________________________________________________________________
+    # dense (Dense)                (None, 24)                408
+    # _________________________________________________________________
+    # dense_1 (Dense)              (None, 6)                 150
+    # =================================================================
+    # Total params: 16,558
+    # Trainable params: 16,558
+    # Non-trainable params: 0
+    """
+    model = tf.keras.Sequential(
+        [
+            tf.keras.layers.Embedding(
+                vocab_size, embedding_dim, input_length=input_length
+            ),
+            tf.keras.layers.GlobalAveragePooling1D(),
+            tf.keras.layers.Dense(24, activation="relu"),
+            tf.keras.layers.Dense(6, activation="softmax"),
+        ]
+    )
+    model.summary()
+    return model
 
 
-history = model.fit(
-    train_padded,
-    training_label_seq,
-    epochs=num_epochs,
-    validation_data=(validation_padded, validation_label_seq),
-    verbose=2,
-)
+def model_compile(model, loss, optimizer, metrics):
+    model.compile(loss=loss, optimizer=optimizer, metrics=metrics)
+    return model
 
 
-def plot_graphs(history, string):
-    plt.plot(history.history[string])
-    plt.plot(history.history["val_" + string])
-    plt.xlabel("Epochs")
-    plt.ylabel(string)
-    plt.legend([string, "val_" + string])
+if __name__ == "__main__":
+    sentences, labels = read_bbc_news_csv(stopwords)
+    (
+        val_sentences,
+        training_sentences,
+        val_labels,
+        training_labels,
+    ) = train_test_split_sentences_labels(sentences, labels, training_portion)
+    (
+        train_sequences,
+        val_sequences,
+        train_label_seq,
+        val_label_seq,
+    ) = tokenise_text_to_sequences(
+        training_sentences,
+        val_sentences,
+        training_labels,
+        val_labels,
+        vocab_size,
+        oov_tok,
+    )
+    train_padded, val_padded = padded_sequences(
+        train_sequences,
+        val_sequences,
+        max_length=max_length,
+        padding_type=padding_type,
+        trunc_type=trunc_type,
+    )
+
+    model = model_build(vocab_size, embedding_dim, max_length)
+    model_compile(
+        model,
+        loss="sparse_categorical_crossentropy",
+        optimizer="adam",
+        metrics=["accuracy"],
+    )
+    history = model.fit(
+        train_padded,
+        train_label_seq,
+        epochs=num_epochs,
+        validation_data=(val_padded, val_label_seq),
+        verbose=2,
+    )
+    weights = model.layers[0].get_weights()[0]
+    print(weights.shape)  # shape: (vocab_size, embedding_dim)
+    plt = plot_acc_loss(history)
     plt.show()
-
-
-def decode_sentence(text):
-    return " ".join([reverse_word_index.get(i, "?") for i in text])
-
-
-plot_graphs(history, "acc")
-plot_graphs(history, "loss")
-
-
-reverse_word_index = dict([(value, key) for (key, value) in word_index.items()])
-
-e = model.layers[0]
-weights = e.get_weights()[0]
-print(weights.shape)  # shape: (vocab_size, embedding_dim)
-
-out_v = io.open("vecs.tsv", "w", encoding="utf-8")
-out_m = io.open("meta.tsv", "w", encoding="utf-8")
-for word_num in range(1, vocab_size):
-    word = reverse_word_index[word_num]
-    embeddings = weights[word_num]
-    out_m.write(word + "\n")
-    out_v.write("\t".join([str(x) for x in embeddings]) + "\n")
-out_v.close()
-out_m.close()

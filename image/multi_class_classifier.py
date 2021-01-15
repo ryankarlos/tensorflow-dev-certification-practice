@@ -1,5 +1,5 @@
 import numpy as np
-from utils.io_preprocessing import get_data_from_csv
+from utils.io_preprocessing import get_data_from_mnist
 from utils.augmentation import (
     train_val_generator_with_flow,
     data_generator_with_augmentation,
@@ -42,8 +42,8 @@ def compile_model_with_rmsprop(model, alpha):
 
 
 if __name__ == "__main__":
-    training_images, training_labels = get_data_from_csv(path_sign_mnist_train)
-    testing_images, testing_labels = get_data_from_csv(path_sign_mnist_test)
+    training_images, training_labels = get_data_from_mnist(path_sign_mnist_train)
+    testing_images, testing_labels = get_data_from_mnist(path_sign_mnist_test)
 
     # add another dimension to the data, example (10000, 28, 28) --> (10000, 28, 28, 1)
     training_images = np.expand_dims(training_images, axis=3)

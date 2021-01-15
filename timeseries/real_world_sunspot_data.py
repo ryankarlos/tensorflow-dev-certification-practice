@@ -6,7 +6,7 @@ from utils.accuracy_loss import plot_series
 from utils.callback import callback_lrschedule
 from utils.io_preprocessing import (
     read_sunsplot_data_series,
-    train_test_split,
+    train_test_split_series_time,
     windowed_dataset,
 )
 
@@ -54,7 +54,7 @@ def model_forecast(model, series, window_size):
 
 if __name__ == "__main__":
     series, time = read_sunsplot_data_series()
-    time_train, x_train, time_valid, x_valid = train_test_split(
+    time_train, x_train, time_valid, x_valid = train_test_split_series_time(
         series, time, split_time
     )
     plt.figure(figsize=(10, 6))

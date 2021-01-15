@@ -2,18 +2,22 @@ import csv
 import os
 import random
 import zipfile
-
 import numpy as np
-import tensorflow as tf
 from tensorflow.python.keras.preprocessing.sequence import pad_sequences
 from tensorflow.python.keras.preprocessing.text import Tokenizer
+
+# this suppresses the logs from tensorflow - needs to be set before tf is imported
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+import tensorflow as tf
+
 
 PATH_STANFORD = "data/tmp/stanford_nlp/training_cleaned.csv"
 PATH_GLOVE = "data/glove.6B.100d.txt"
 SUNSPOT_PATH = "data/tmp/sunspots/daily-min-temperatures.csv"
+PATH_BBC_NEWS = "data/tmp/bbc_news/bbc-text.csv"
 
 
-def get_data_from_csv(filename):
+def get_data_from_mnist(filename):
     with open(filename) as training_file:
         labels = []
         images = []
@@ -69,7 +73,7 @@ def read_sunsplot_data_series():
     return series, time
 
 
-def train_test_split(series, time, split_time):
+def train_test_split_series_time(series, time, split_time):
     time_train = time[:split_time]
     x_train = series[:split_time]
     time_valid = time[split_time:]
@@ -114,19 +118,40 @@ def split_corpus_into_sentences_labels(corpus, training_size):
     return sentences, labels
 
 
-def tokenise_text_to_sequences(sentences):
-    tokenizer = Tokenizer()
-    tokenizer.fit_on_texts(sentences)
+def tokenise_text_to_sequences(
+    train_sentences, val_sentences, train_labels, val_labels, vocab_size, oov_tok
+):
+    tokenizer = Tokenizer(num_words=vocab_size, oov_token=oov_tok)
+    tokenizer.fit_on_texts(train_sentences)
     word_index = tokenizer.word_index
-    sequences = tokenizer.texts_to_sequences(sentences)
-    return sequences, word_index
 
+    train_sequences = tokenizer.texts_to_sequences(train_sentences)
+    validation_sequences = tokenizer.texts_to_sequences(val_sentences)
+    label_tokenizer = Tokenizer()
+    label_tokenizer.fit_on_texts(train_labels)
+    training_label_seq = np.array(label_tokenizer.texts_to_sequences(train_labels))
+    validation_label_seq = np.array(label_tokenizer.texts_to_sequences(val_labels))
+    print("train label seq shape:", training_label_seq.shape)
+    print("val label seq shape:", validation_label_seq.shape)
 
-def pad_sequencs(sequences, max_length, padding_type, trunc_type):
-    padded = pad_sequences(
-        sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type
+    return (
+        train_sequences,
+        validation_sequences,
+        training_label_seq,
+        validation_label_seq,
     )
-    return padded
+
+
+def padded_sequences(
+    train_sequences, val_sequences, max_length, padding_type, trunc_type
+):
+    train_padded = pad_sequences(
+        train_sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type
+    )
+    val_padded = pad_sequences(
+        val_sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type
+    )
+    return train_padded, val_padded
 
 
 def create_glove_embedding_matrix(word_index, embedding_dim):
@@ -145,3 +170,34 @@ def create_glove_embedding_matrix(word_index, embedding_dim):
         if embedding_vector is not None:
             embeddings_matrix[i] = embedding_vector
     return embeddings_matrix
+
+
+def read_bbc_news_csv(stopwords):
+    labels = []
+    sentences = []
+    with open(PATH_BBC_NEWS, "r") as csvfile:
+        reader = csv.reader(csvfile, delimiter=",")
+        next(reader)
+        for row in reader:
+            labels.append(row[0])
+            sentence = row[1]
+            for word in stopwords:
+                token = " " + word + " "
+                sentence = sentence.replace(token, " ")
+            sentences.append(sentence)
+        return sentences, labels
+
+
+def train_test_split_sentences_labels(sentences, labels, training_portion):
+    train_size = int(len(sentences) * training_portion)
+
+    train_sentences = sentences[:train_size]
+    train_labels = labels[:train_size]
+
+    validation_sentences = sentences[train_size:]
+    validation_labels = labels[train_size:]
+
+    print("train data size:", len(train_sentences))
+    print("train labels size:", len(train_labels))
+
+    return validation_sentences, train_sentences, validation_labels, train_labels
