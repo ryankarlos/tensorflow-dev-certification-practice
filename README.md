@@ -12,10 +12,8 @@ using TensorFlow
 * Sequence, Time Series and Prediction
 
 
-For accessing data used for the scripts, ive stored them and made it available in AWS bucket
-Dowload AWS cli from here https://aws.amazon.com/cli/
-
-and then in command line, cd to root of repo and run: 
+For accessing data used for the scripts, ive stored them and made it available in AWS Simple Storage.  
+Dowload AWS cli from here https://aws.amazon.com/cli/  and then in command line, cd to root of repo and run: 
 
 `aws s3 cp s3://tensorflow-data-certification data --recursive`
 
