@@ -1,4 +1,5 @@
 import tensorflow as tf
+import numpy as np
 
 from utils.io_preprocessing import (
     read_stanford_corpus,
@@ -19,10 +20,11 @@ num_epochs = 50
 num_sentences = 0
 
 
-def train_test_split(padded):
+def train_test_split(padded, labels):
     split = int(test_portion * training_size)
     test_sequences = padded[0:split]
     training_sequences = padded[split:training_size]
+    labels = np.asarray(labels)
     test_labels = labels[0:split]
     training_labels = labels[split:training_size]
     return test_sequences, training_sequences, test_labels, training_labels
@@ -55,7 +57,7 @@ if __name__ == "__main__":
     sequences, word_index = tokenise_text_to_sequences(sentences)
     padded = pad_sequencs(sequences, max_length, padding_type, trunc_type)
     test_sequences, training_sequences, test_labels, training_labels = train_test_split(
-        padded
+        padded, labels
     )
     embeddings_matrix = create_glove_embedding_matrix(word_index, embedding_dim)
     model = build_lstm_model(embeddings_matrix, word_index)
