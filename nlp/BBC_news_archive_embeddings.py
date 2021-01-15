@@ -253,6 +253,14 @@ if __name__ == "__main__":
         validation_data=(val_padded, val_label_seq),
         verbose=2,
     )
+    """
+    56/56 - 0s - loss: 0.0484 - accuracy: 0.9966 - val_loss: 0.1984 - val_accuracy: 0.9416
+    Epoch 29/30
+    56/56 - 0s - loss: 0.0441 - accuracy: 0.9989 - val_loss: 0.1962 - val_accuracy: 0.9416
+    Epoch 30/30
+    56/56 - 0s - loss: 0.0406 - accuracy: 0.9983 - val_loss: 0.1948 - val_accuracy: 0.9438
+    (1000, 16)
+    """
     weights = model.layers[0].get_weights()[0]
     print(weights.shape)  # shape: (vocab_size, embedding_dim)
     plt = plot_acc_loss(history)
