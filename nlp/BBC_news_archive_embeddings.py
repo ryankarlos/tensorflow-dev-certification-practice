@@ -56,7 +56,7 @@ def model_compile(model, loss, optimizer, metrics):
 
 
 if __name__ == "__main__":
-    sentences, labels = read_bbc_news_csv(stopwords)
+    sentences, labels = read_bbc_news_csv()
     (
         val_sentences,
         training_sentences,
@@ -99,12 +99,12 @@ if __name__ == "__main__":
         verbose=2,
     )
     """
-    56/56 - 0s - loss: 0.0484 - accuracy: 0.9966 - val_loss: 0.1984 - val_accuracy: 0.9416
+    Epoch 28/30
+    56/56 - 0s - loss: 0.0410 - accuracy: 0.9955 - val_loss: 0.2151 - val_accuracy: 0.9483
     Epoch 29/30
-    56/56 - 0s - loss: 0.0441 - accuracy: 0.9989 - val_loss: 0.1962 - val_accuracy: 0.9416
+    56/56 - 0s - loss: 0.0371 - accuracy: 0.9966 - val_loss: 0.2149 - val_accuracy: 0.9483
     Epoch 30/30
-    56/56 - 0s - loss: 0.0406 - accuracy: 0.9983 - val_loss: 0.1948 - val_accuracy: 0.9438
-    (1000, 16)
+    56/56 - 0s - loss: 0.0337 - accuracy: 0.9972 - val_loss: 0.2109 - val_accuracy: 0.9528
     """
     weights = model.layers[0].get_weights()[0]
     print(weights.shape)  # shape: (vocab_size, embedding_dim)
