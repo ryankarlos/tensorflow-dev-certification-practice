@@ -15,6 +15,7 @@ PATH_STANFORD = "data/tmp/stanford_nlp/training_cleaned.csv"
 PATH_GLOVE = "data/glove.6B.100d.txt"
 SUNSPOT_PATH = "data/tmp/sunspots/daily-min-temperatures.csv"
 PATH_BBC_NEWS = "data/tmp/bbc_news/bbc-text.csv"
+PATH_STOPWORDS = "data/stopwords.txt"
 
 
 def get_data_from_mnist(filename):
@@ -172,9 +173,19 @@ def create_glove_embedding_matrix(word_index, embedding_dim):
     return embeddings_matrix
 
 
-def read_bbc_news_csv(stopwords):
+def get_stopwords_from_txt():
+    with open(PATH_STOPWORDS, "r") as f:
+        # txt = 'a\nabout\nabove\nafter\nagain\ ...... '
+        txt = f.read()
+        # lst = ['a', 'about', 'above', ...]
+        lst = txt.splitlines()  # splits at \n
+    return lst
+
+
+def read_bbc_news_csv():
     labels = []
     sentences = []
+    stopwords = get_stopwords_from_txt()
     with open(PATH_BBC_NEWS, "r") as csvfile:
         reader = csv.reader(csvfile, delimiter=",")
         next(reader)
