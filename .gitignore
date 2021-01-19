@@ -2,3 +2,5 @@ __pycache__
 .DS_Store
 data/
 .idea/
+nlp/notebooks/.ipynb_checkpoints/
+nlp/notebooks/Avoid_overfitting_in_NLP.ipynb
