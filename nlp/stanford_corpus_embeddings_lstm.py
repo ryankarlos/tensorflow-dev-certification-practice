@@ -3,10 +3,12 @@ from utils.io_preprocessing import (
     read_stanford_corpus,
     split_corpus_into_sentences_labels,
     tokenise_sentence_to_sequence,
+    tokenise_labels_to_sequences,
     padded_sequences,
     create_glove_embedding_matrix,
     train_test_split_sentences_labels,
 )
+import numpy as np
 
 # this suppresses the logs from tensorflow - needs to be set before tf is imported
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
@@ -48,22 +50,31 @@ if __name__ == "__main__":
 
     corpus = read_stanford_corpus(num_sentences)
     sentences, labels = split_corpus_into_sentences_labels(corpus, training_size)
-    sequences, word_index = tokenise_sentence_to_sequence(sentences, vocab_size, oov_tok)
-    padded = padded_sequences(sequences, max_length, padding_type, trunc_type)
     (
-        test_sequences,
-        training_sequences,
-        test_labels,
+        val_sentences,
+        training_sentences,
+        val_labels,
         training_labels,
-    ) = train_test_split_sentences_labels(padded, labels, training_portion)
+    ) = train_test_split_sentences_labels(sentences, labels, training_portion)
+
+    training_sequences,test_sequences, word_index = tokenise_sentence_to_sequence(training_sentences, vocab_size, oov_tok,val_sentences=val_sentences)
+
+    train_padded, val_padded = padded_sequences(
+        training_sequences,
+        val_sequences=test_sequences,
+        max_length=max_length,
+        padding_type=padding_type,
+        trunc_type=trunc_type,
+    )
+
     embeddings_matrix = create_glove_embedding_matrix(word_index, embedding_dim)
     model = build_lstm_model(embeddings_matrix, word_index)
     model.compile(loss="binary_crossentropy", optimizer="adam", metrics=["accuracy"])
     history = model.fit(
-        training_sequences,
-        training_labels,
+        train_padded,
+        np.array(training_labels, dtype=np.float),
         epochs=num_epochs,
-        validation_data=(test_sequences, test_labels),
+        validation_data=(val_padded, np.array(val_labels, dtype=np.float)),
         verbose=2,
     )
     """
