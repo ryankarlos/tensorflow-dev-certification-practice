@@ -119,40 +119,50 @@ def split_corpus_into_sentences_labels(corpus, training_size):
     return sentences, labels
 
 
-def tokenise_text_to_sequences(
-    train_sentences, val_sentences, train_labels, val_labels, vocab_size, oov_tok
-):
+def tokenise_sentence_to_sequence(train_sentences, vocab_size, oov_tok, val_sentences=None):
     tokenizer = Tokenizer(num_words=vocab_size, oov_token=oov_tok)
     tokenizer.fit_on_texts(train_sentences)
     word_index = tokenizer.word_index
-
     train_sequences = tokenizer.texts_to_sequences(train_sentences)
-    validation_sequences = tokenizer.texts_to_sequences(val_sentences)
+    if val_sentences is None:
+        return train_sequences, word_index
+    else:
+        validation_sequences = tokenizer.texts_to_sequences(val_sentences)
+        return train_sequences, validation_sequences, word_index
+
+
+def tokenise_labels_to_sequences(
+        train_labels, val_labels=None
+):
+
     label_tokenizer = Tokenizer()
     label_tokenizer.fit_on_texts(train_labels)
     training_label_seq = np.array(label_tokenizer.texts_to_sequences(train_labels))
-    validation_label_seq = np.array(label_tokenizer.texts_to_sequences(val_labels))
     print("train label seq shape:", training_label_seq.shape)
-    print("val label seq shape:", validation_label_seq.shape)
-
-    return (
-        train_sequences,
-        validation_sequences,
-        training_label_seq,
-        validation_label_seq,
-    )
+    if val_labels is None:
+        return training_label_seq
+    else:
+        validation_label_seq = np.array(label_tokenizer.texts_to_sequences(val_labels))
+        print("val label seq shape:", validation_label_seq.shape)
+        return (
+            training_label_seq,
+            validation_label_seq,
+        )
 
 
 def padded_sequences(
-    train_sequences, val_sequences, max_length, padding_type, trunc_type
+    train_sequences, max_length, padding_type, trunc_type, val_sequences=None
 ):
     train_padded = pad_sequences(
         train_sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type
     )
-    val_padded = pad_sequences(
-        val_sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type
-    )
-    return train_padded, val_padded
+    if val_sequences is None:
+        return train_padded
+    else:
+        val_padded = pad_sequences(
+            val_sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type
+        )
+        return train_padded, val_padded
 
 
 def create_glove_embedding_matrix(word_index, embedding_dim):

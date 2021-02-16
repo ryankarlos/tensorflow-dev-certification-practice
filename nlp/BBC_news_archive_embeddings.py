@@ -3,7 +3,8 @@ from utils.accuracy_loss import plot_acc_loss
 from utils.io_preprocessing import (
     read_bbc_news_csv,
     train_test_split_sentences_labels,
-    tokenise_text_to_sequences,
+    tokenise_sentence_to_sequence,
+    tokenise_labels_to_sequences,
     padded_sequences,
 )
 
@@ -63,22 +64,14 @@ if __name__ == "__main__":
         val_labels,
         training_labels,
     ) = train_test_split_sentences_labels(sentences, labels, training_portion)
-    (
-        train_sequences,
-        val_sequences,
-        train_label_seq,
-        val_label_seq,
-    ) = tokenise_text_to_sequences(
-        training_sentences,
-        val_sentences,
-        training_labels,
-        val_labels,
-        vocab_size,
-        oov_tok,
-    )
+
+    train_sequences, val_sequences, word_index = tokenise_sentence_to_sequence(training_sentences,vocab_size,oov_tok,
+                                                                               val_sentences)
+    train_label_seq, val_label_seq = tokenise_labels_to_sequences(training_labels, val_labels)
+
     train_padded, val_padded = padded_sequences(
         train_sequences,
-        val_sequences,
+        val_sequences=val_sequences,
         max_length=max_length,
         padding_type=padding_type,
         trunc_type=trunc_type,

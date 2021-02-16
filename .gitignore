@@ -1,6 +1,9 @@
 __pycache__
 .DS_Store
-data/
+data/tmp/*
+data/*.zip
+data/*.h5
+data/glove.6B.100d.txt
 .idea/
 nlp/notebooks/.ipynb_checkpoints/
 nlp/notebooks/Avoid_overfitting_in_NLP.ipynb

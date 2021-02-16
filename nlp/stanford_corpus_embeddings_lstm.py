@@ -2,7 +2,7 @@ import os
 from utils.io_preprocessing import (
     read_stanford_corpus,
     split_corpus_into_sentences_labels,
-    tokenise_text_to_sequences,
+    tokenise_sentence_to_sequence,
     padded_sequences,
     create_glove_embedding_matrix,
     train_test_split_sentences_labels,
@@ -21,6 +21,7 @@ training_size = 160000
 training_portion = 0.9
 num_epochs = 50
 num_sentences = 0
+vocab_size = 1000
 
 
 def build_lstm_model(embeddings_matrix, word_index):
@@ -47,7 +48,7 @@ if __name__ == "__main__":
 
     corpus = read_stanford_corpus(num_sentences)
     sentences, labels = split_corpus_into_sentences_labels(corpus, training_size)
-    sequences, word_index = tokenise_text_to_sequences(sentences)
+    sequences, word_index = tokenise_sentence_to_sequence(sentences, vocab_size, oov_tok)
     padded = padded_sequences(sequences, max_length, padding_type, trunc_type)
     (
         test_sequences,
