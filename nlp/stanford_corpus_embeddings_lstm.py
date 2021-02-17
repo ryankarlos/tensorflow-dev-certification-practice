@@ -3,7 +3,6 @@ from utils.io_preprocessing import (
     read_stanford_corpus,
     split_corpus_into_sentences_labels,
     tokenise_sentence_to_sequence,
-    tokenise_labels_to_sequences,
     padded_sequences,
     create_glove_embedding_matrix,
     train_test_split_sentences_labels,
@@ -19,11 +18,13 @@ max_length = 16
 trunc_type = "post"
 padding_type = "post"
 oov_tok = "<OOV>"
-training_size = 160000
+training_size = 106000
 training_portion = 0.9
-num_epochs = 50
+num_epochs = 14
 num_sentences = 0
 vocab_size = 1000
+batch_size = 1000
+steps_per_epoch = (training_size*0.9)/batch_size
 
 
 def build_lstm_model(embeddings_matrix, word_index):
@@ -74,6 +75,7 @@ if __name__ == "__main__":
         train_padded,
         np.array(training_labels, dtype=np.float),
         epochs=num_epochs,
+        steps_per_epoch=steps_per_epoch,
         validation_data=(val_padded, np.array(val_labels, dtype=np.float)),
         verbose=2,
     )
