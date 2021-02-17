@@ -80,10 +80,17 @@ if __name__ == "__main__":
         verbose=2,
     )
     """
-    4500/4500 - 18s - loss: 0.4242 - accuracy: 0.7974 - val_loss: 0.5130 - val_accuracy: 0.7529
-    Epoch 49/50
-    4500/4500 - 15s - loss: 0.4251 - accuracy: 0.7970 - val_loss: 0.5137 - val_accuracy: 0.7514
-    Epoch 50/50
-    4500/4500 - 18s - loss: 0.4239 - accuracy: 0.7993 - val_loss: 0.5087 - val_accuracy: 0.7553
+    Epoch 1/14
+    95/95 - 6s - loss: 0.6343 - accuracy: 0.6364 - val_loss: 0.5811 - val_accuracy: 0.6910
+    Epoch 2/14
+    95/95 - 4s - loss: 0.5813 - accuracy: 0.6875 - val_loss: 0.5529 - val_accuracy: 0.7106
+    Epoch 3/14
+    95/95 - 4s - loss: 0.5599 - accuracy: 0.7066 - val_loss: 0.5471 - val_accuracy: 0.7186
+    Epoch 4/14
+    95/95 - 4s - loss: 0.5487 - accuracy: 0.7156 - val_loss: 0.5348 - val_accuracy: 0.7263
+    Epoch 5/14
+    95/95 - 5s - loss: 0.5418 - accuracy: 0.7210 - val_loss: 0.5302 - val_accuracy: 0.7304
+    Epoch 6/14
+    95/95 - 5s - loss: 0.5317 - accuracy: 0.7285 - val_loss: 0.5265 - val_accuracy: 0.7327
     """
     print("Training Complete")
