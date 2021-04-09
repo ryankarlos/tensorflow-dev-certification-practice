@@ -20,6 +20,8 @@ def callback_lrschedule():
 
 
 def callback_earlystopping():
-    early_stopping = tf.keras.callbacks.EarlyStopping(monitor='loss', min_delta=0.001, patience=3)
+    early_stopping = tf.keras.callbacks.EarlyStopping(
+        monitor="loss", min_delta=0.001, patience=3
+    )
 
     return early_stopping

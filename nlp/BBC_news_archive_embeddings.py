@@ -65,9 +65,12 @@ if __name__ == "__main__":
         training_labels,
     ) = train_test_split_sentences_labels(sentences, labels, training_portion)
 
-    train_sequences, val_sequences, word_index = tokenise_sentence_to_sequence(training_sentences,vocab_size,oov_tok,
-                                                                               val_sentences)
-    train_label_seq, val_label_seq = tokenise_labels_to_sequences(training_labels, val_labels)
+    train_sequences, val_sequences, word_index = tokenise_sentence_to_sequence(
+        training_sentences, vocab_size, oov_tok, val_sentences
+    )
+    train_label_seq, val_label_seq = tokenise_labels_to_sequences(
+        training_labels, val_labels
+    )
 
     train_padded, val_padded = padded_sequences(
         train_sequences,

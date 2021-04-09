@@ -129,9 +129,7 @@ def tokenise_sentence_to_sequence(train_sentences, vocab_size, oov_tok, val_sent
     return train_sequences, validation_sequences, word_index
 
 
-def tokenise_labels_to_sequences(
-        train_labels, val_labels
-):
+def tokenise_labels_to_sequences(train_labels, val_labels):
 
     label_tokenizer = Tokenizer()
     label_tokenizer.fit_on_texts(train_labels)

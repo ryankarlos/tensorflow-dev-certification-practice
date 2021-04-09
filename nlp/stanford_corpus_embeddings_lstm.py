@@ -24,7 +24,7 @@ num_epochs = 14
 num_sentences = 0
 vocab_size = 1000
 batch_size = 1000
-steps_per_epoch = (training_size*0.9)/batch_size
+steps_per_epoch = (training_size * 0.9) / batch_size
 
 
 def build_lstm_model(embeddings_matrix, word_index):
@@ -58,7 +58,9 @@ if __name__ == "__main__":
         training_labels,
     ) = train_test_split_sentences_labels(sentences, labels, training_portion)
 
-    training_sequences,test_sequences, word_index = tokenise_sentence_to_sequence(training_sentences, vocab_size, oov_tok,val_sentences=val_sentences)
+    training_sequences, test_sequences, word_index = tokenise_sentence_to_sequence(
+        training_sentences, vocab_size, oov_tok, val_sentences=val_sentences
+    )
 
     train_padded, val_padded = padded_sequences(
         training_sequences,
