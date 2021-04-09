@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from utils.accuracy_loss import plot_series
-from utils.callback import callback_lrschedule
+from utils.callback import callback_lrschedule, callback_earlystopping
 from utils.io_preprocessing import (
     read_sunsplot_data_series,
     train_test_split_series_time,
@@ -73,7 +73,7 @@ if __name__ == "__main__":
 
     model = build_rnn_timeseries_model()
     compile_model(model)
-    history = model.fit(train_set, epochs=epochs)
+    history = model.fit(train_set, epochs=epochs, callbacks=[lr_schedule])
 
     """
         Epoch 145/150
