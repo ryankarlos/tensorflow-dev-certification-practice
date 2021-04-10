@@ -1,8 +1,9 @@
 import tensorflow as tf
 from utils.time_series_components import create_time_series_with_noise
 from utils.io_preprocessing import windowed_dataset
-from utils.accuracy_loss import plot_series
+from utils.plotting import plot_series, plot_lr_schedule
 import numpy as np
+from utils.callback import callback_lrschedule
 
 
 SPLIT_TIME = 3000
@@ -81,7 +82,7 @@ if __name__ == "__main__":
         optimiser(learning_rate=learning_rate, momentum=momentum),
         *metrics
     )
-    history = model_fit(model, epochs=epochs, callbacks=None)
+    history = model_fit(model, epochs=epochs, callbacks=callback_lrschedule())
+    plot_lr_schedule(history)
     results = forecast_results(series, window_size, model)
-
     plot_series(time_test, results)

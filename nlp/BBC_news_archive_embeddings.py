@@ -1,5 +1,5 @@
 import tensorflow as tf
-from utils.accuracy_loss import plot_acc_loss
+from utils.plotting import plot_acc_loss
 from utils.io_preprocessing import (
     read_bbc_news_csv,
     train_test_split_sentences_labels,

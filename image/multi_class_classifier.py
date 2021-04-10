@@ -4,7 +4,7 @@ from utils.augmentation import (
     train_val_generator_with_flow,
     data_generator_with_augmentation,
 )
-from utils.accuracy_loss import plot_acc_loss
+from utils.plotting import plot_acc_loss
 import os
 
 # this suppresses the logs from tensorflow - needs to be set before tf is imported

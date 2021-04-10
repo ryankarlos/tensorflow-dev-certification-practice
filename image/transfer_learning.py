@@ -9,7 +9,7 @@ from utils.augmentation import (
     data_generator_with_augmentation,
 )
 from utils.io_preprocessing import paths_to_train_val_dirs, extract_from_zip
-from utils.accuracy_loss import plot_acc_loss
+from utils.plotting import plot_acc_loss
 
 PATH_INCEPTION = f"data/inception_v3_weights_tf_dim_ordering_tf_kernels_notop.h5"
 
