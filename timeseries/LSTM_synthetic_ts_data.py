@@ -59,6 +59,7 @@ def model_fit(model, epochs: int, callbacks=None):
 
 def forecast_results(series, window_size, model):
     forecast = []
+    # this could be optimised to run in parallel perhaps
     for time in range(len(series) - window_size):
         forecast.append(model.predict(series[time : time + window_size][np.newaxis]))
     forecast = forecast[SPLIT_TIME - window_size :]
@@ -84,6 +85,8 @@ if __name__ == "__main__":
     )
     history = model_fit(model, epochs=epochs, callbacks=callback_lrschedule())
     plot_lr_schedule(history)
+
+    # the bit below will take a long time to run - better to run on colab or gpu
     results = forecast_results(series, window_size, model)
     print(tf.keras.metrics.mean_absolute_error(x_test, results).numpy())
     plot_series(time_test, results)
