@@ -85,4 +85,5 @@ if __name__ == "__main__":
     history = model_fit(model, epochs=epochs, callbacks=callback_lrschedule())
     plot_lr_schedule(history)
     results = forecast_results(series, window_size, model)
+    print(tf.keras.metrics.mean_absolute_error(x_test, results).numpy())
     plot_series(time_test, results)
