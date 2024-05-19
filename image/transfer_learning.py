@@ -91,9 +91,9 @@ if __name__ == "__main__":
     history = model.fit(
         train_generator,
         validation_data=validation_generator,
-        steps_per_epoch=100,
-        epochs=20,
-        validation_steps=50,
+        steps_per_epoch=10,
+        epochs=5,
+        validation_steps=5,
         verbose=2,
     )
     plt = plot_acc_loss(history)

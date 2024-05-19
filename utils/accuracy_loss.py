@@ -9,8 +9,8 @@ def compute_loss(history):
     """
     Computes training and val loss and accuracy
     """
-    acc = history.history["accuracy"]
-    val_acc = history.history["val_accuracy"]
+    acc = history.history["acc"]
+    val_acc = history.history["val_acc"]
     loss = history.history["loss"]
     val_loss = history.history["val_loss"]
 
