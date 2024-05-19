@@ -6,10 +6,10 @@ authors = ["Your Name <you@example.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = ">=3.11, <3.12"
 pandas = "^2.2.2"
-tensorflow = "^2.16.1"
-tensorflow-datasets = "^4.9.4"
+tensorflow = "2.13"
+tensorflow-datasets = "*"
 scipy = "^1.13.0"
 jupyter = "^1.0.0"
 matplotlib = "^3.9.0"

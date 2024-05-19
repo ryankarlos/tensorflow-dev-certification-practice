@@ -55,7 +55,7 @@ def build_model_with_transfer_learning(pre_trained_model):
     """
 
     last_layer = pre_trained_model.get_layer("mixed6")
-    print("last layer output shape: ", last_layer.output_shape)
+    print("last layer output shape: ", last_layer.output.shape)
     last_output = last_layer.output
 
     # Flatten the output layer to 1 dimension
@@ -68,7 +68,7 @@ def build_model_with_transfer_learning(pre_trained_model):
     x = layers.Dense(1, activation="sigmoid")(x)
     model = Model(pre_trained_model.inputs, x)
     model.compile(
-        optimizer=RMSprop(lr=0.0001), loss="binary_crossentropy", metrics=["acc"]
+        optimizer=RMSprop(learning_rate=0.0001), loss="binary_crossentropy", metrics=["acc"]
     )
 
     return model

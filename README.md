@@ -31,7 +31,9 @@ poetry shell
 
 ## Download data 
 
-For accessing cats and dogs data used for the scripts, in the root of the repo, run the following command to download the
-zip file to the data foler.
+For accessing cats and dogs data used for the scripts, in the root of the repo, download the
+zip file from https://storage.googleapis.com/mledu-datasets/cats_and_dogs_filtered.zip and place in 
+the `data` directory in root of repo.
 
-`!wget --no-check-certificate https://storage.googleapis.com/mledu-datasets/cats_and_dogs_filtered.zip -O datA/cats_and_dogs_filtered.zip`
+for inception weights download https://storage.googleapis.com/mledu-datasets/inception_v3_weights_tf_dim_ordering_tf_kernels_notop.h5 
+and place in data folder.
