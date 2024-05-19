@@ -29,11 +29,9 @@ poetry install
 poetry shell
 ```
 
+## Download data 
 
-################################################################
+For accessing cats and dogs data used for the scripts, in the root of the repo, run the following command to download the
+zip file to the data foler.
 
-For accessing data used for the scripts, ive stored them and made it available in AWS Simple Storage.  
-Dowload AWS cli from here https://aws.amazon.com/cli/  and then in command line, cd to root of repo and run: 
-
-`aws s3 cp s3://tensorflow-data-certification data --recursive`
-
+`!wget --no-check-certificate https://storage.googleapis.com/mledu-datasets/cats_and_dogs_filtered.zip -O datA/cats_and_dogs_filtered.zip`

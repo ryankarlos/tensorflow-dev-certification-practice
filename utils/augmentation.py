@@ -1,4 +1,4 @@
-from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 
 def data_generator_with_augmentation():

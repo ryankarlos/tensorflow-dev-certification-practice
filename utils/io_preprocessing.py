@@ -3,8 +3,8 @@ import os
 import random
 import zipfile
 import numpy as np
-from tensorflow.python.keras.preprocessing.sequence import pad_sequences
-from tensorflow.python.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.preprocessing.text import Tokenizer
 
 # this suppresses the logs from tensorflow - needs to be set before tf is imported
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
