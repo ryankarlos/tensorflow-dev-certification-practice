@@ -193,7 +193,7 @@ def read_bbc_news_csv():
         reader = csv.reader(csvfile, delimiter=",")
         next(reader)
         for row in reader:
-            labels.append(row[0])
+            labels.append(row[2])
             sentence = row[1]
             for word in stopwords:
                 token = " " + word + " "

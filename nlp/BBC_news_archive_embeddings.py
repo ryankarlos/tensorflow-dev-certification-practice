@@ -104,5 +104,6 @@ if __name__ == "__main__":
     """
     weights = model.layers[0].get_weights()[0]
     print(weights.shape)  # shape: (vocab_size, embedding_dim)
+    print(history.history)
     plt = plot_acc_loss(history)
     plt.show()

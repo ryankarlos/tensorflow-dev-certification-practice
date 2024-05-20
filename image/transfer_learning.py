@@ -68,7 +68,9 @@ def build_model_with_transfer_learning(pre_trained_model):
     x = layers.Dense(1, activation="sigmoid")(x)
     model = Model(pre_trained_model.inputs, x)
     model.compile(
-        optimizer=RMSprop(learning_rate=0.0001), loss="binary_crossentropy", metrics=["acc"]
+        optimizer=RMSprop(learning_rate=0.0001),
+        loss="binary_crossentropy",
+        metrics=["acc"],
     )
 
     return model
