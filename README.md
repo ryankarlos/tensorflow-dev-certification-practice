@@ -17,8 +17,10 @@ using TensorFlow
 
 install pyenv from https://github.com/pyenv/pyenv?tab=readme-ov-file#getting-pyenv
 
-`pyenv install 3.11.4`
-`pip install poetry`
+```
+pyenv install 3.11.4
+pip install poetry
+```
 
 ### activate env
 
